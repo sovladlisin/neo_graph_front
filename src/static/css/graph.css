@@ -1,0 +1,226 @@
+.graph-actions {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: grid;
+    justify-items: right;
+    z-index: 99;
+    gap: 5px;
+}
+
+.graph-actions>button {
+    background: white;
+    box-shadow: 0 0 4px gainsboro;
+    border-radius: 50px;
+    height: 30px;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
+    padding: 0 10px;
+}
+
+.graph-actions>button>* {
+    font-size: 9pt;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+}
+
+.graph-flow-controls {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 99;
+}
+
+.graph-flow-controls>button {
+    background: white;
+    border-radius: 30px;
+    height: 30px;
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 0 10px;
+    gap: 5px;
+    box-shadow: 0 0 4px gainsboro;
+}
+
+.graph-flow-controls>button>* {
+    height: 30px;
+    line-height: 30px;
+    font-size: 9pt;
+}
+
+.graph-search-window {
+    position: fixed;
+    top: 20px;
+    left: 125px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 4px gainsboro;
+    overflow: auto;
+    z-index: 99;
+}
+
+
+.graph-search-window-container>span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    color: #767676;
+    line-height: 30px;
+    font-size: 8pt;
+}
+
+.graph-search-window-container {
+    position: relative;
+    height: 30px;
+    margin: 10px;
+}
+
+.graph-search-window-container>input {
+    width: calc(100% - 30px);
+    border: 1px solid gainsboro;
+    border-radius: 10px;
+    padding: 0 0 0 30px;
+    font-size: 9pt;
+    height: 30px;
+}
+
+.graph-search-window .graph-search-window-items>button {
+    font-size: 9pt;
+    text-align: left;
+    padding: 5px 20px;
+    height: 30px;
+}
+
+.graph-search-window .graph-search-window-items>button:hover {
+    background: gainsboro;
+}
+
+.graph-search-window-items {
+    display: grid;
+    height: 200px;
+    border: 1px solid gainsboro;
+    margin: 10px;
+    border-radius: 10px;
+    overflow: auto;
+}
+
+.transparent-background {
+    position: absolute;
+    top: -1000px;
+    width: 9999px;
+    height: 9999px;
+    z-index: 7;
+    left: -1000px;
+}
+
+.graph-actions-button-selected {
+    background: #5f9dff !important;
+    color: white;
+}
+
+.home-ontology-list {
+    width: 1200px;
+    margin: 20px auto 30px auto;
+    border: 1px solid gainsboro;
+    padding: 20px;
+    border-radius: 15px;
+    display: table;
+}
+
+.home-ontology-list>div {
+    height: 100px;
+    background: white;
+    border-radius: 15px;
+    float: left;
+    margin-right: 15px;
+    font-size: 10pt;
+    width: 200px;
+    box-shadow: 0 0 6px gainsboro;
+}
+
+.home-ontology-list>button {
+    width: 200px;
+    background: white;
+    height: 100px;
+    border-radius: 15px;
+    box-shadow: 0 0 6px gainsboro;
+    display: block;
+    font-size: 29pt;
+    color: gainsboro;
+}
+
+.home-title {
+    width: 1240px;
+    margin: 50px auto 0px auto;
+    font-size: 26pt;
+    color: #444;
+}
+
+.home-ontology-list p {
+    margin: 20px;
+}
+
+.home-ontology-list a {
+    height: inherit;
+    width: inherit;
+    display: inline-block;
+}
+
+.graph-filters {
+    position: fixed;
+    top: 55px;
+    display: grid;
+    justify-items: left;
+    left: 125px;
+    gap: 8px;
+    z-index: 9;
+}
+
+.graph-filters>button {
+    float: right;
+    height: 30px;
+    background: white;
+    border-radius: 30px;
+    font-size: 9pt;
+    padding: 0 10px;
+}
+
+.graph-filters-button {
+    position: fixed;
+    top: 55px;
+    left: 20px;
+    background: white;
+    border-radius: 30px;
+    height: 30px;
+    font-size: 9pt;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 5px;
+    z-index: 9;
+    padding: 0 10px;
+    box-shadow: 0 0 4px gainsboro;
+}
+
+.graph-filters-button.selected {
+    background: #5f9dff;
+    color: white;
+}
+
+.graph-filter-selected {
+    background: #ff7575 !important;
+    color: white;
+}
+
+.graph-filters-button>p {
+    line-height: 30px;
+}
+
+.graph-filters-button>i {
+    height: 30px;
+    line-height: 30px;
+}
