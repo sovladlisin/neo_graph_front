@@ -10,6 +10,8 @@ import './src/static/css/main-node.css'
 import './src/static/css/forms.css'
 import './src/static/css/graph.css'
 import './src/static/css/pattern.css'
+import './src/static/css/project.css'
+import './src/static/css/info.css'
 
 
 import '@fortawesome/fontawesome-free/css/all.min.css';

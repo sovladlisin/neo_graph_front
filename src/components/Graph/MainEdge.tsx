@@ -1,9 +1,10 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getBezierPath } from 'reactflow';
 import { deleteRelation } from '../../actions/graph/graph';
 import { TNodeData } from '../../actions/graph/types';
-import { getArcLabel, useKeyPress } from '../../utils';
+import { getArcLabel, getNodeLabel, useKeyPress } from '../../utils';
+import { RootStore } from '../../store';
 
 export default function MainEdge({
     id,
@@ -29,7 +30,13 @@ export default function MainEdge({
     const data_l: TNodeData = data
     const isCtrlPress = useKeyPress('Control')
     const dispatch = useDispatch()
+    const nameState = useSelector((state: RootStore) => state.graph.arc_names)
 
+
+    const getTitle = () => {
+        const name = nameState.find(n => n.data.uri === data_l.uri)
+        return name ? getNodeLabel(name) : getArcLabel(data_l)
+    }
 
 
     return (
@@ -49,7 +56,7 @@ export default function MainEdge({
                     textAnchor="left"
                     onClick={_ => isCtrlPress && dispatch(deleteRelation(data_l.ontology_uri, data_l.id))}
                 >
-                    {getArcLabel(data)}
+                    {getTitle()}
                 </textPath>
             </text>
         </>

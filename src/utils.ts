@@ -11,6 +11,7 @@ export const HOST = window.location.host.includes('local') ? "http://" + window.
 
 export const SERVER_DOMAIN = 'https://folk.philology.nsc.ru/'
 export const SERVER_URL = 'http://127.0.0.1:8000/api'
+export const SERVER_URL_FILES = 'http://127.0.0.1:8000'
 export const SERVER_URL_AUTH = 'https://folk.philology.nsc.ru/neo_back/auth/'
 
 
@@ -28,6 +29,9 @@ export const OBJECT_PROPERTY = "http://www.w3.org/2002/07/owl#ObjectProperty"
 export const LABEL = "http://www.w3.org/2000/01/rdf-schema#label"
 export const COMMENT = "http://www.w3.org/2000/01/rdf-schema#comment"
 export const URI = 'uri'
+
+export const MAIN_RESOURCE = 'http://erlangen-crm.org/mainResource'
+
 
 // // images
 // import logo from './static/images/f-logo.jpg'
@@ -118,6 +122,7 @@ export const getNodeColorClass = (node: TNode) => {
         return 'node-service'
 }
 export const getNodeColor = (node: TNode) => {
+    if (!node) return ''
     if (node.data.labels.includes(CLASS))
         return '#5f9dff'
     if (node.data.labels.includes(OBJECT))
@@ -127,6 +132,7 @@ export const getNodeColor = (node: TNode) => {
 }
 
 export const getPatternNodeColorClass = (node: TPatternNode) => {
+    if (!node) return ''
     if (node.data.tag === CLASS)
         return 'node-class'
     if (node.data.tag === OBJECT)
@@ -159,7 +165,7 @@ export const MAIN_MARKER = {
 
 export const checkPattern = (pattern: TPattern,) => {
     const pattern_main = pattern.nodes.find(n => n.data.is_main)
-
+    if (!pattern_main) return;
     const collect = (node: TPatternNode) => {
 
     }

@@ -38,12 +38,12 @@ body {
 }
 
 .bg-blue {
-    background: rgb(31, 127, 244) !important;
+    background: #5f9dff !important;
     color: white !important;
 }
 
 .color-blue {
-    color: rgb(31, 127, 244) !important;
+    color: #5f9dff !important;
 }
 
 .color-white {
@@ -69,12 +69,12 @@ body {
 }
 
 #root {
-    height: 100%;
     width: 100%;
     position: absolute;
     top: 0;
     left: 0;
     background: #dcdcdc54;
+    min-height: 100%;
 }
 
 button {
@@ -244,7 +244,6 @@ tt,
 var,
 b,
 u,
-i,
 center,
 dl,
 dt,
@@ -293,5 +292,5 @@ button {
     border: 0;
     font-size: 100%;
     vertical-align: baseline;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat', sans-serif !important;
 }

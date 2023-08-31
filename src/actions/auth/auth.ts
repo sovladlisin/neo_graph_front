@@ -6,3 +6,4 @@ export const withToken = (params = {}): {} => {
     return { params: params }
 
 }
+

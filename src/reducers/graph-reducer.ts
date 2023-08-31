@@ -1,10 +1,16 @@
-import { GRAPH_CREATE_NODES, GRAPH_DELETE_PATTERN, GRAPH_GET_GRAPH, GRAPH_HIGHLIGHT_NODE, GRAPH_IS_LOADING, GRAPH_REMOVE_NODES, GRAPH_SAVE_PATTERN, GRAPH_SET_PATTERNS, GRAPH_TOGGLE_NODE, GRAPH_UPDATE_NODES, TArc, TGraphDispatchTypes, TNode, TPattern } from "../actions/graph/types";
+import { GRAPH_CREATE_NODES, GRAPH_DELETE_PATTERN, GRAPH_GET_CLASS_OBJECTS, GRAPH_GET_GRAPH, GRAPH_HIGHLIGHT_NODE, GRAPH_IS_LOADING, GRAPH_REMOVE_NODES, GRAPH_SAVE_PATTERN, GRAPH_SET_PATTERNS, GRAPH_TOGGLE_NODE, GRAPH_UPDATE_NODES, GRAPH_UPDATE_SELECTION, TArc, TGraphDispatchTypes, TNode, TPattern } from "../actions/graph/types";
 
 interface IDefaultState {
     nodes: TNode[],
     arcs: TArc[],
     patterns: TPattern[],
-    is_loading: boolean
+    is_loading: boolean,
+
+    class_objects: TNode[],
+
+    arc_names: TNode[],
+
+    selection: { nodes: TNode[], arcs: TArc[] }
 }
 
 const defaultState: IDefaultState = {
@@ -12,10 +18,28 @@ const defaultState: IDefaultState = {
     arcs: [],
     patterns: [],
     is_loading: false,
+
+    class_objects: [],
+
+    arc_names: [],
+
+    selection: { nodes: [], arcs: [] }
 }
 
 export const graphReducer = (state: IDefaultState = defaultState, action: TGraphDispatchTypes) => {
     switch (action.type) {
+        case GRAPH_UPDATE_SELECTION:
+            return {
+                ...state,
+                selection: action.payload
+            }
+
+        case GRAPH_GET_CLASS_OBJECTS:
+            return {
+                ...state,
+                class_objects: action.payload
+            }
+
         case GRAPH_UPDATE_NODES:
             var new_nodes = {}
             action.payload.nodes.map(n => {
@@ -91,7 +115,8 @@ export const graphReducer = (state: IDefaultState = defaultState, action: TGraph
             return {
                 ...state,
                 nodes: action.payload.nodes,
-                arcs: action.payload.arcs
+                arcs: action.payload.arcs,
+                arc_names: action.payload.arc_names
             }
 
         case GRAPH_IS_LOADING:

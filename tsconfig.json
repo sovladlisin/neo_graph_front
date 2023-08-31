@@ -3,7 +3,7 @@
         "module": "commonjs",
         "jsx": "react",
         "watch": true,
-        "target": "ES3",
+        // "target": "ES3",
         "lib": [
             "es6",
             "dom"

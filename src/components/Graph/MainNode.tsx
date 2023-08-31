@@ -12,6 +12,8 @@ export default function MainNode(node: TNode) {
     var className = getNodeColorClass(node)
     className = node.data.is_highlighted ? className + ' highlighted-node' : className
 
+    const locked = !node.data.labels.includes(node.data.ontology_uri)
+
     const hangleStyle = {
         background: 'white',
         width: '15px',
@@ -22,23 +24,33 @@ export default function MainNode(node: TNode) {
             <div onMouseEnter={_ => setIsHovering(true)} onMouseLeave={_ => setIsHovering(false)}>
 
                 <Handle isValidConnection={(connection) => true}
-                    // onConnect={(params) => console.log('handle onConnect', params)} 
-                    type="target" position={Position.Bottom} style={{ ...hangleStyle }} />
+                    onConnect={(params) => node.data.onNodeConnect(params.source, params.target)}
+
+                    type="target" position={Position.Bottom} style={{ ...hangleStyle }} id='target' />
                 <div style={showNodeMenu ? { zIndex: 8 } : {}} className={'node-meta-container ' + className} >
-                    {!isHovering && <p>{getNodeLabel(node)}</p>}
+                    {!isHovering && <p className='node-label'>
+                        {getNodeLabel(node)}
+                        {locked && <span className='node-locked-marker'><i className='fas fa-lock'></i></span>}
+                    </p>}
                     {isHovering && <>
+                        <p className='node-label'>
+                            {getNodeLabel(node)}
+                            {locked && <span className='node-locked-marker'><i className='fas fa-lock'></i></span>}
+                        </p>
                         <div className='node-meta-buttons-container'>
 
                             <button onClick={_ => setShowNodeMenu(true)}><i className='fas fa-ellipsis-v' /></button>
                             <button onClick={_ => node.data.onToggle(node.data.uri)}><i className='fas fa-eye' /></button>
+                            <button onClick={_ => node.data.onOpenEntity(node.data.ontology_uri, node.data.uri)}><i className='fas fa-list' /></button>
                         </div>
                     </>}
 
 
                 </div>
                 <Handle isValidConnection={(connection) => true}
-                    // onConnect={(params) => console.log('handle onConnect', params)}
-                    type="source" position={Position.Top} style={{ ...hangleStyle }} id="a" />
+                    onConnect={(params) => node.data.onNodeConnect(params.source, params.target)}
+
+                    type="source" position={Position.Top} style={{ ...hangleStyle }} id="source" />
 
                 {node.data.is_toggled && <span className='node-hidden-count'>{node.data.toggled_data.length}</span>}
             </div>

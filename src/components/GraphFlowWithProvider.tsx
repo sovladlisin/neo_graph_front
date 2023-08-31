@@ -1,17 +1,20 @@
 import * as React from 'react';
-import ReactFlow, { ReactFlowProvider, useReactFlow, Controls, MiniMap } from 'reactflow';
+import ReactFlow, { useOnSelectionChange, ReactFlowProvider, useReactFlow, Controls, MiniMap, useKeyPress } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useCallback } from 'react';
 import SearchWindow from './Graph/SearchWindow';
 import { calcNodeWidthForLayout, getNodeColor } from '../utils';
-import { TNode } from '../actions/graph/types';
-import { useDispatch } from 'react-redux';
-import { highlightNode } from '../actions/graph/graph';
+import { TArc, TNode } from '../actions/graph/types';
+import { useDispatch, useSelector } from 'react-redux';
+import { applyOntologyPattern, highlightNode, updateGraphSelection } from '../actions/graph/graph';
+import { RootStore } from '../store';
 
 
 
 const GraphFlow: React.FunctionComponent = (props) => {
     const dispatch = useDispatch()
+
+    const selectionState = useSelector((state: RootStore) => state.graph.selection)
 
     const { setViewport, zoomIn, zoomOut } = useReactFlow();
     const onNodeSelect = (node: TNode) => {
@@ -29,7 +32,16 @@ const GraphFlow: React.FunctionComponent = (props) => {
         return getNodeColor(node)
     };
 
+
+
+
+
+
+
+
+
     return <>
+
         <div className='graph-flow-controls'>
             <button className={searchWindow ? 'graph-actions-button-selected' : ''} onClick={_ => setSearchWindow(!searchWindow)}><i className='fas fa-search'></i><p>Поиск</p></button>
         </div>

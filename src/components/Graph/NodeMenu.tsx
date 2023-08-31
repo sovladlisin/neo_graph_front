@@ -31,6 +31,9 @@ const NodeMenu: React.FunctionComponent<INodeMenuProps> = (props) => {
     }))
   }, [, patterns])
 
+  const locked = !props.node.data.labels.includes(props.node.data.ontology_uri)
+
+
   return <>
     <div className='node-context-menu-background' onClick={_ => props.onClose()}></div>
     <div className='node-context-menu'>
@@ -45,8 +48,10 @@ const NodeMenu: React.FunctionComponent<INodeMenuProps> = (props) => {
         return <button onClick={_ => props.node.data.onApplyPattern(props.node, p)}><i className='fas fa-project-diagram'></i><p>{p.name}</p></button>
       })}
 
-      <button onClick={_ => props.node.data.onEdit(props.node.data.uri)}><i className='fas fa-cog color-blue'></i><p>Редактировать</p></button>
-      <button onClick={_ => props.node.data.onDelete(props.node.data.uri)}><i className='fas fa-trash color-red'></i><p>Удалить</p></button>
+      {!locked && <>
+        <button onClick={_ => props.node.data.onEdit(props.node.data.uri)}><i className='fas fa-cog color-blue'></i><p>Редактировать</p></button>
+        <button onClick={_ => props.node.data.onDelete(props.node.data.uri)}><i className='fas fa-trash color-red'></i><p>Удалить</p></button>
+      </>}
     </div>
 
 

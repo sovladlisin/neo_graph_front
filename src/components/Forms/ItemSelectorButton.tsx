@@ -5,7 +5,8 @@ import { TNode } from '../../actions/graph/types';
 import { getItemsByLabels } from '../../actions/ontology/ontology';
 import { ONTOLOGY_GET_ITEMS_BY_LABELS } from '../../actions/ontology/types';
 import { RootStore } from '../../store';
-import { getNodeLabel, readLabel, SERVER_URL } from '../../utils';
+import { CLASS, getNodeLabel, readLabel, SERVER_URL } from '../../utils';
+import { withToken } from '../../actions/auth/auth';
 
 interface IItemSelectorButtonProps {
     title: string,
@@ -23,15 +24,22 @@ const ItemSelectorButton: React.FunctionComponent<IItemSelectorButtonProps> = (p
     const [itemsState, setItemsState] = React.useState<TNode[]>([])
     const [selectorMenu, setSelectorMenu] = React.useState(false)
 
-    const onLoad = async () => {
-        const body = JSON.stringify({ ontology_uri: props.ontology_uri, labels: props.labels, custom_q: props.custom_q })
-        var response = await axios.post(SERVER_URL + '/getItemsByLabels', body)
+    const onLoad = async (class_uri: string) => {
+
+        if (props.labels.length === 1 && props.labels[0] === CLASS) {
+            const body = JSON.stringify({ ontology_uri: props.ontology_uri, labels: props.labels })
+            var response = await axios.post(SERVER_URL + '/getItemsByLabels', body)
+        }
+        else {
+            const params = withToken({ ontology_uri: props.ontology_uri, class_uri })
+            var response = await axios.get(SERVER_URL + '/getClassObjects', params)
+        }
         const items: TNode[] = response.data
         setItemsState(items)
     }
     React.useEffect(() => {
-
-        onLoad()
+        console.log(props.labels)
+        onLoad(props.labels.slice(-1)[0])
         // dispatch(getItemsByLabels(props.ontology_uri, props.labels, props.custom_q))
 
     }, [, selectorMenu])

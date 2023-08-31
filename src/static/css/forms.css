@@ -265,3 +265,83 @@ input {
     margin: 5px 0;
     color: #ff3262;
 }
+
+.m-form-select-list {
+    border: 1px solid gainsboro;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.m-form-select-list>button {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 5px;
+    height: 30px;
+    background: #ececfd;
+    padding: 0 5px;
+    float: left;
+    margin-right: 5px;
+}
+
+.m-form-select-list>button>* {
+    line-height: 30px;
+    font-size: 9pt;
+}
+
+.m-form-select-list-with-search {
+    padding: 10px;
+    border: 1px solid gainsboro;
+    border-radius: 5px;
+}
+
+.m-form-select-list-with-search-list {
+    padding: 10px;
+    border: 1px solid gainsboro;
+    margin-top: 10px;
+    border-radius: 5px;
+    height: 200px;
+    overflow: auto;
+    display: grid;
+}
+
+.m-form-select-list-with-search-list>button {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: left;
+    gap: 10px;
+}
+
+.m-form-select-list-with-search-list>button>p {
+    height: 30px;
+    line-height: 30px;
+    font-size: 9pt;
+    text-align: left;
+}
+
+.m-form-select-list-with-search-list>button>i {
+    line-height: 30px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    color: #ececfd;
+}
+
+.m-form-select-list-with-search-search {
+    position: relative;
+}
+
+.m-form-select-list-with-search-search>span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 30px;
+    width: 30px;
+    line-height: 30px;
+    text-align: center;
+    color: #9191b6;
+    font-size: 9pt;
+}
+
+.m-form-select-list-with-search-search>input {
+    padding: 0 0 0 30px;
+}

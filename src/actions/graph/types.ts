@@ -14,6 +14,10 @@ export const GRAPH_SAVE_PATTERN = 'GRAPH_SAVE_PATTERN'
 export const GRAPH_DELETE_PATTERN = 'GRAPH_DELETE_PATTERN'
 export const GRAPH_SET_PATTERNS = 'GRAPH_SET_PATTERNS'
 
+export const GRAPH_GET_CLASS_OBJECTS = 'GRAPH_GET_CLASS_OBJECTS'
+
+export const GRAPH_UPDATE_SELECTION = 'GRAPH_UPDATE_SELECTION'
+
 
 
 
@@ -41,6 +45,8 @@ export type TNodeData = {
     onDelete?: (uri: string) => void,
     onApplyPattern?: (node: TNode, pattern: TPattern) => void,
     onEdit?: (uri: string) => void,
+    onOpenEntity?: (ontology_uri: string, uri: string) => void,
+    onNodeConnect?: (source: string, target: string) => void,
     is_toggled: boolean,
     toggled_data: string[],
 
@@ -56,6 +62,7 @@ export type TObjectTypeAttribute = {
     field: TNode,
     range: TNode,
     value?: TNode,
+    relation?: TArc
     direction: 0 | 1
 }
 
@@ -116,12 +123,18 @@ export type TPatternArc = {
 
 interface IUploadNodes {
     type: typeof GRAPH_GET_GRAPH | typeof GRAPH_CREATE_NODES | typeof GRAPH_UPDATE_NODES
-    payload: { nodes: TNode[], arcs?: TArc[] }
+    payload: { nodes: TNode[], arcs?: TArc[], arc_names?: TNode[] }
 }
 interface IRemoveNodes {
     type: typeof GRAPH_REMOVE_NODES
     payload: { nodes: string[], arcs: number[] }
 }
+
+interface IUpdateSelection {
+    type: typeof GRAPH_UPDATE_SELECTION,
+    payload: { nodes: TNode[], arcs: TArc[] }
+}
+
 interface Loading {
     type: typeof GRAPH_IS_LOADING,
     payload: boolean
@@ -147,4 +160,9 @@ interface ISetPatternItems {
     payload: TPattern[]
 }
 
-export type TGraphDispatchTypes = ISetPatternItems | IUploadNodes | Loading | IRemoveNodes | IToggleNode | IHighlightNode | IGraphSavePattern | IGraphDeletePattern
+interface getNodes {
+    type: typeof GRAPH_GET_CLASS_OBJECTS,
+    payload: TNode[]
+}
+
+export type TGraphDispatchTypes = IUpdateSelection | getNodes | ISetPatternItems | IUploadNodes | Loading | IRemoveNodes | IToggleNode | IHighlightNode | IGraphSavePattern | IGraphDeletePattern

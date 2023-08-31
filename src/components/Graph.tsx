@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Edge, MarkerType, Node } from 'reactflow';
 import { useCallback } from 'react';
-import ReactFlow, { useReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge, applyEdgeChanges } from 'reactflow';
+import ReactFlow, { useOnSelectionChange, useReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge, applyEdgeChanges } from 'reactflow';
 
 import 'reactflow/dist/style.css';
-import MainEdge from './graph/MainEdge';
-import MainNode from './graph/MainNode';
+import MainEdge from './Graph/MainEdge';
+import MainNode from './Graph/MainNode';
 import { useDispatch, useSelector } from 'react-redux';
-import { applyPattern, collectPatterns, createObject, deleteEntity, getGraph, savePattern, toggleNode } from '../actions/graph/graph';
+import { applyPattern, collectPatterns, createObject, createRelation, deleteEntity, getGraph, savePattern, toggleNode } from '../actions/graph/graph';
 import { RootStore } from '../store';
 import Loading from './Loading';
 import { TArc, TNode, TPattern } from '../actions/graph/types';
@@ -21,13 +21,15 @@ import PatternForm from './Forms/Pattern/PatternForm';
 import ApplyPatternForm from './Forms/ApplyPatternForm';
 import EntityForm from './Forms/EntityForm/EntityForm';
 import EdgeSelector from './Forms/Pattern/EdgeSelector';
+import { openEntity } from '../actions/ontology/ontology';
+import OntologyPatternMenu from './Graph/OntologyPatternMenu';
 
 interface IGraphProps {
     uri: string
 }
 
-const Graph: React.FunctionComponent<IGraphProps> = ({ match }: RouteComponentProps<IGraphProps>) => {
-    const ontology_uri: string = decode(match.params.uri)
+const Graph: React.FunctionComponent<IGraphProps> = (props) => {
+    const ontology_uri: string = props.uri
     const dispatch = useDispatch()
     React.useEffect(() => { dispatch(getGraph(ontology_uri)) }, [])
     const graphState = useSelector((state: RootStore) => state.graph)
@@ -46,6 +48,8 @@ const Graph: React.FunctionComponent<IGraphProps> = ({ match }: RouteComponentPr
                 onCreateObject: onCreateObject,
                 onDelete: onDeleteEntity,
                 onApplyPattern: onApplyPattern,
+                onOpenEntity: onOpenEntity,
+                onNodeConnect: onNodeConnect,
                 onEdit: onEdit,
                 toggled_data: getToggledData(n, graphState.arcs)
             }
@@ -91,7 +95,8 @@ const Graph: React.FunctionComponent<IGraphProps> = ({ match }: RouteComponentPr
     const onCreateObject = (class_uri: string) => setAddingObject(class_uri)
     const onApplyPattern = (node: TNode, pattern: TPattern) => setApplyPatternWindow({ pattern, node })
     const onEdit = (uri: string) => setEntityForm(uri)
-
+    const onOpenEntity = (ontology_uri, uri) => dispatch(openEntity({ ontology_uri, uri }))
+    const onNodeConnect = (source: string, target: string) => dispatch(createRelation(source, target, ontology_uri))
 
     // layout
     const updateGraphLayout = (l_nodes: TNode[] | any, l_edges: TArc[] | any) => {
@@ -121,9 +126,11 @@ const Graph: React.FunctionComponent<IGraphProps> = ({ match }: RouteComponentPr
 
         var nodes_uris = l_nodes_new.map(n => n.data.uri)
 
+
         l_edges.map(edge => {
-            if (nodes_uris.includes(edge.source) && nodes_uris.includes(edge.target))
+            if (nodes_uris.includes(edge.source) && nodes_uris.includes(edge.target)) {
                 g.setEdge(edge.source, edge.target);
+            }
         })
 
         l_nodes_new.map(node => { g.setNode(node.data.uri, { label: node.data.uri, width: calcNodeWidthForLayout(node), height: 35 }); })
@@ -159,6 +166,8 @@ const Graph: React.FunctionComponent<IGraphProps> = ({ match }: RouteComponentPr
     const [patternWindow, setPatternWindow] = React.useState(null)
     const [applyPatternWindow, setApplyPatternWindow] = React.useState<{ pattern: TPattern, node: TNode }>(null)
 
+
+
     // todo fix autoupdating
     React.useEffect(() => {
         var l_patterns = graphState.patterns
@@ -185,33 +194,39 @@ const Graph: React.FunctionComponent<IGraphProps> = ({ match }: RouteComponentPr
     // }
 
 
+    const [ontologyPatternMenu, setOntologyPatternMenu] = React.useState(false)
+
+
     return <>
-        {patternMainMenu && <PatternMenu onClose={() => setPatternMainMenu(false)} onPatternEdit={(pattern: TPattern) => { setPatternWindow(pattern) }} ontology_uri={ontology_uri} />}
-        {addingClass && <ClassForm ontology_uri={ontology_uri} onClose={() => setAddingClass(false)} />}
-        {addingClassWithParent && <ClassForm ontology_uri={ontology_uri} onClose={() => setAddingClassWithParent(null)} parent_uri={addingClassWithParent} />}
-        {addingObject && <ObjectForm ontology_uri={ontology_uri} onClose={() => setAddingObject(null)} class_uri={addingObject} />}
-        {patternWindow && <PatternForm ontology_uri={ontology_uri} onSave={pattern => dispatch(savePattern(pattern))} onClose={() => setPatternWindow(null)} pattern={patternWindow} />}
-        {applyPatternWindow && <ApplyPatternForm onApply={(pattern: TPattern) => dispatch(applyPattern(pattern))} onClose={() => setApplyPatternWindow(null)} ontology_uri={ontology_uri} pattern={applyPatternWindow.pattern} node={applyPatternWindow.node} />}
-        {entityForm && <EntityForm ontology_uri={ontology_uri} onClose={() => setEntityForm(null)} uri={entityForm} />}
 
+        <div className='graph-main-container'>
+            {patternMainMenu && <PatternMenu onClose={() => setPatternMainMenu(false)} onPatternEdit={(pattern: TPattern) => { setPatternWindow(pattern) }} ontology_uri={ontology_uri} />}
+            {addingClass && <ClassForm ontology_uri={ontology_uri} onClose={() => setAddingClass(false)} />}
+            {addingClassWithParent && <ClassForm ontology_uri={ontology_uri} onClose={() => setAddingClassWithParent(null)} parent_uri={addingClassWithParent} />}
+            {addingObject && <ObjectForm ontology_uri={ontology_uri} onClose={() => setAddingObject(null)} class_uri={addingObject} />}
+            {patternWindow && <PatternForm ontology_uri={ontology_uri} onSave={pattern => dispatch(savePattern(pattern))} onClose={() => setPatternWindow(null)} pattern={patternWindow} />}
+            {applyPatternWindow && <ApplyPatternForm onApply={(pattern: TPattern) => dispatch(applyPattern(pattern))} onClose={() => setApplyPatternWindow(null)} ontology_uri={ontology_uri} pattern={applyPatternWindow.pattern} node={applyPatternWindow.node} />}
+            {entityForm && <EntityForm ontology_uri={ontology_uri} onClose={() => setEntityForm(null)} uri={entityForm} />}
+            {ontologyPatternMenu && <OntologyPatternMenu ontology_uri={ontology_uri} onClose={() => setOntologyPatternMenu(false)} />}
 
-        <div className='graph-actions'>
-            <button className={addingClass ? 'graph-actions-button-selected' : ''} onClick={_ => { setAddingClass(!addingClass) }}><p>Добавить класс</p><i className='fas fa-plus'></i></button>
-            <button className={patternMainMenu ? 'graph-actions-button-selected' : ''} onClick={_ => setPatternMainMenu(!patternMainMenu)}><p>Паттерны</p><i className='fas fa-project-diagram'></i></button>
-        </div>
+            <div className='graph-actions'>
+                <button className={addingClass ? 'graph-actions-button-selected' : ''} onClick={_ => { setAddingClass(!addingClass) }}><p>Добавить класс</p><i className='fas fa-plus'></i></button>
+                <button className={patternMainMenu ? 'graph-actions-button-selected' : ''} onClick={_ => setPatternMainMenu(!patternMainMenu)}><p>Паттерны</p><i className='fas fa-project-diagram'></i></button>
+                <button className={ontologyPatternMenu ? 'graph-actions-button-selected' : ''} onClick={_ => setOntologyPatternMenu(!ontologyPatternMenu)}><p>Паттерны содержания</p><i className='fas fa-project-diagram'></i></button>
+            </div>
 
-        {/* Filters */}
-        <button className={showFilterWindow ? 'graph-filters-button selected' : 'graph-filters-button'} onClick={_ => setShowFilterWindow(!showFilterWindow)}><p>Фильтры</p><i className='fas fa-filter'></i></button>
-        <div className='graph-filters'>
-            {showFilterWindow && <>
-                <button className={selectedFilter === 1 && 'graph-filter-selected'} onClick={_ => selectedFilter === 1 ? setSelectedFilters(-1) : setSelectedFilters(1)}>Классы и объекты</button>
-                <button className={selectedFilter === 2 && 'graph-filter-selected'} onClick={_ => selectedFilter === 2 ? setSelectedFilters(-1) : setSelectedFilters(2)}>Классы</button>
-                <button className={selectedFilter === 3 && 'graph-filter-selected'} onClick={_ => selectedFilter === 3 ? setSelectedFilters(-1) : setSelectedFilters(3)}>Классы и атрибуты</button>
-            </>}
-        </div>
+            {/* Filters */}
+            <button className={showFilterWindow ? 'graph-filters-button selected' : 'graph-filters-button'} onClick={_ => setShowFilterWindow(!showFilterWindow)}><p>Фильтры</p><i className='fas fa-filter'></i></button>
+            <div className='graph-filters'>
+                {showFilterWindow && <>
+                    <button className={selectedFilter === 1 && 'graph-filter-selected'} onClick={_ => selectedFilter === 1 ? setSelectedFilters(-1) : setSelectedFilters(1)}>Классы и объекты</button>
+                    <button className={selectedFilter === 2 && 'graph-filter-selected'} onClick={_ => selectedFilter === 2 ? setSelectedFilters(-1) : setSelectedFilters(2)}>Классы</button>
+                    <button className={selectedFilter === 3 && 'graph-filter-selected'} onClick={_ => selectedFilter === 3 ? setSelectedFilters(-1) : setSelectedFilters(3)}>Классы и атрибуты</button>
+                </>}
+            </div>
 
-        {/* edges */}
-        {/* {edgeForm && <EdgeSelector
+            {/* edges */}
+            {/* {edgeForm && <EdgeSelector
                     ontology_uri={ontology_uri}
                     onClose={() => setEdgeForm(null)}
                     onSelect={(uri: string) => addPatternEdge(uri, edgeForm.source, edgeForm.target)}
@@ -219,24 +234,27 @@ const Graph: React.FunctionComponent<IGraphProps> = ({ match }: RouteComponentPr
         />} */}
 
 
-        {graphState.is_loading && <Loading height={600} />}
-        {!graphState.is_loading && <>
-            <GraphFlowWithProvider
-                // @ts-ignore
-                nodes={nodes}
-                edges={edges}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onConnect={onConnect}
-                // @ts-ignore
-                edgeTypes={edgeTypes}
-                // @ts-ignore
-                nodeTypes={nodeTypes}
+            {graphState.is_loading && <Loading height={600} />}
+            {!graphState.is_loading && <>
+                <GraphFlowWithProvider
+                    // @ts-ignore
+                    nodes={nodes}
+                    edges={edges}
+                    onNodesChange={onNodesChange}
+                    onEdgesChange={onEdgesChange}
+
+                    onConnect={onConnect}
+                    // @ts-ignore
+                    edgeTypes={edgeTypes}
+                    // @ts-ignore
+                    nodeTypes={nodeTypes}
 
 
-            />
-        </>
-        }
+                />
+            </>
+            }
+        </div>
+
     </>
 }
 

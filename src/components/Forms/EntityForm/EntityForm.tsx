@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addClassAttribute, addClassObjectAttribute, updateEntity } from '../../../actions/graph/graph';
+import { addClassAttribute, addClassObjectAttribute, updateEntity, updateEntityFile } from '../../../actions/graph/graph';
 import { TNode, TObjectTypeAttribute } from '../../../actions/graph/types';
 import { collectEntity } from '../../../actions/ontology/ontology';
 import { RootStore } from '../../../store';
@@ -10,6 +10,8 @@ import ItemSelectorButton from '../ItemSelectorButton';
 import LabelForm from '../LabelForm';
 import AddClassAttribute from './AddClassAttribute';
 import AddClassObjectAttribute from './AddClassObjectAttribute';
+import FileSelectorButton from '../Files/FileSelectorButton';
+import { TFile } from '../../../actions/files/types';
 
 interface IEntityFormProps {
     ontology_uri: string
@@ -71,9 +73,16 @@ const EntityForm: React.FunctionComponent<IEntityFormProps> = (props) => {
             const name = getNodeLabel(att)
             const uri = att.data.uri
 
+            const isFile = att.data[LABEL].includes('File@en')
             return <>
-                <label>{name}</label>
-                {isEdit && <input value={node.data.params_values[uri]} onChange={e => setNodeParam(uri, e.target.value)}></input>}
+                {!isFile && <label>{name}</label>}
+                {isEdit && <>
+                    {isFile && <FileSelectorButton link={node.data.params_values[uri]} onSelect={(file: TFile) => {
+                        dispatch(updateEntityFile(node.data.ontology_uri, node.data.uri, uri, file.id))
+                        // setNodeParam(uri, file.link)
+                    }} />}
+                    {!isFile && <input value={node.data.params_values[uri]} onChange={e => setNodeParam(uri, e.target.value)}></input>}
+                </>}
                 {!isEdit && <label className='form-class-label-value'>Строка</label>}
             </>
         })
@@ -103,6 +112,8 @@ const EntityForm: React.FunctionComponent<IEntityFormProps> = (props) => {
     }
 
     const onSave = () => {
+
+
         dispatch(updateEntity(props.ontology_uri, props.uri, node.data.params_values, node.data.obj_attributes))
     }
 
@@ -173,7 +184,7 @@ const EntityForm: React.FunctionComponent<IEntityFormProps> = (props) => {
                         <i className='fas fa-long-arrow-alt-right'></i>
                         <span className='m-form-entity-form-section-header-title-description-bubble'>{getFormTitle()}</span>
                     </div>
-                    <button onClick={_ => setAddingClassObjectAttribute(0)}><i className='fas fa-plus'></i></button>
+                    {/* <button onClick={_ => setAddingClassObjectAttribute(0)}><i className='fas fa-plus'></i></button> */}
                 </div>
                 <div className='m-form-entity-form-section-fields'>
                     {renderObjectAttributes(0)}

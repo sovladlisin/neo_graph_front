@@ -1,8 +1,9 @@
 import { Dispatch } from "react"
-import { GRAPH_CREATE_NODES, GRAPH_DELETE_PATTERN, GRAPH_GET_GRAPH, GRAPH_HIGHLIGHT_NODE, GRAPH_IS_LOADING, GRAPH_REMOVE_NODES, GRAPH_SAVE_PATTERN, GRAPH_SET_PATTERNS, GRAPH_TOGGLE_NODE, GRAPH_UPDATE_NODES, TGraphDispatchTypes, TPattern } from "./types"
+import { GRAPH_CREATE_NODES, GRAPH_DELETE_PATTERN, GRAPH_GET_GRAPH, GRAPH_HIGHLIGHT_NODE, GRAPH_IS_LOADING, GRAPH_REMOVE_NODES, GRAPH_SAVE_PATTERN, GRAPH_SET_PATTERNS, GRAPH_TOGGLE_NODE, GRAPH_UPDATE_NODES, GRAPH_UPDATE_SELECTION, TArc, TGraphDispatchTypes, TNode, TPattern } from "./types"
 import axios from 'axios'
 import { SERVER_URL } from "../../utils"
 import { withToken } from "../auth/auth"
+import { FILES_UPDATE_FILE, TFileDispatchTypes } from "../files/types"
 
 
 export const getGraph = (uri: string) => (dispatch: Dispatch<TGraphDispatchTypes>) => {
@@ -16,7 +17,32 @@ export const getGraph = (uri: string) => (dispatch: Dispatch<TGraphDispatchTypes
     axios.get(SERVER_URL + '/getGraph', params).then(res => {
         dispatch({
             type: GRAPH_GET_GRAPH,
-            payload: { nodes: res.data.nodes, arcs: res.data.arcs }
+            payload: { nodes: res.data.nodes, arcs: res.data.arcs, arc_names: res.data.arc_names }
+        })
+        dispatch({
+            type: GRAPH_IS_LOADING,
+            payload: false
+        })
+    }).catch((err) => {
+        dispatch({
+            type: GRAPH_IS_LOADING,
+            payload: false
+        })
+    })
+}
+
+export const applyOntologyPattern = (ontology_uri: string, origin_ontology_uri: string) => (dispatch: Dispatch<TGraphDispatchTypes>) => {
+    dispatch({
+        type: GRAPH_IS_LOADING,
+        payload: true
+    })
+
+    const params = withToken({})
+    const body = JSON.stringify({ ontology_uri, origin_ontology_uri })
+    axios.post(SERVER_URL + '/applyOntologyPattern', body, params).then(res => {
+        dispatch({
+            type: GRAPH_GET_GRAPH,
+            payload: { nodes: res.data.nodes, arcs: res.data.arcs, arc_names: res.data.arc_names }
         })
         dispatch({
             type: GRAPH_IS_LOADING,
@@ -103,6 +129,7 @@ export const addClassObjectAttribute = (ontology_uri: string, uri: string, label
 }
 
 export const updateEntity = (ontology_uri: string, uri: string, params: any, obj_params: any) => (dispatch: Dispatch<TGraphDispatchTypes>) => {
+    console.log(obj_params)
     const body = JSON.stringify({ ontology_uri, uri, params, obj_params })
     axios.post(SERVER_URL + '/updateEntity', body).then(res => {
         dispatch({
@@ -138,6 +165,18 @@ export const deleteRelation = (ontology_uri: string, id: number) => (dispatch: D
     })
 }
 
+export const getClassObjects = (ontology_uri: string, class_uri: string) => (dispatch: Dispatch<TGraphDispatchTypes>) => {
+    const params = withToken({ ontology_uri, class_uri })
+    axios.delete(SERVER_URL + '/getClassObjects', params).then(res => {
+        dispatch({
+            type: GRAPH_REMOVE_NODES,
+            payload: { nodes: res.data.nodes, arcs: res.data.arcs }
+        })
+    }).catch((err) => {
+
+    })
+}
+
 
 export const toggleNode = (uri: string) => (dispatch: Dispatch<TGraphDispatchTypes>) => {
     dispatch({
@@ -164,4 +203,43 @@ export const highlightNode = (uri: string) => (dispatch: Dispatch<TGraphDispatch
         type: GRAPH_HIGHLIGHT_NODE,
         payload: uri
     })
+}
+
+export const updateEntityFile = (ontology_uri: string, uri: string, property_uri: any, file_id: number) => (dispatch: Dispatch<TGraphDispatchTypes | TFileDispatchTypes>) => {
+    const body = JSON.stringify({ ontology_uri, uri, property_uri, file_id })
+    axios.post(SERVER_URL + '/updateEntityFile', body).then(res => {
+        dispatch({
+            type: GRAPH_UPDATE_NODES,
+            payload: { nodes: res.data.nodes, arcs: res.data.arcs }
+        })
+        dispatch({
+            type: FILES_UPDATE_FILE,
+            payload: res.data.file_1
+        })
+        if (res.data.file_2)
+            dispatch({
+                type: FILES_UPDATE_FILE,
+                payload: res.data.file_2
+            })
+    }).catch((err) => {
+
+    })
+}
+
+export const updateGraphSelection = (nodes: TNode[], arcs: TArc[]) => (dispatch: Dispatch<TGraphDispatchTypes>) => {
+    dispatch({
+        type: GRAPH_UPDATE_SELECTION,
+        payload: { nodes, arcs }
+    })
+}
+
+
+export const createRelation = (source: string, target: string, ontology_uri: string) => (dispatch: Dispatch<TGraphDispatchTypes>) => {
+    const body = JSON.stringify({ ontology_uri, target, source })
+
+    axios.post(SERVER_URL + '/createRelation', body).then(res => {
+
+
+    })
+
 }

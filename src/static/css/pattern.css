@@ -1,5 +1,5 @@
 .graph-pattern-menu {
-    position: fixed;
+    position: absolute;
     top: 20px;
     right: 175px;
     background: white;
@@ -80,7 +80,7 @@
 }
 
 .graph-pattern-form-window {
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

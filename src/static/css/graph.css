@@ -1,5 +1,5 @@
 .graph-actions {
-    position: fixed;
+    position: absolute;
     top: 20px;
     right: 20px;
     display: grid;
@@ -27,7 +27,7 @@
 }
 
 .graph-flow-controls {
-    position: fixed;
+    position: absolute;
     top: 20px;
     left: 20px;
     z-index: 99;
@@ -51,7 +51,7 @@
 }
 
 .graph-search-window {
-    position: fixed;
+    position: absolute;
     top: 20px;
     left: 125px;
     background: white;
@@ -129,11 +129,11 @@
     border: 1px solid gainsboro;
     padding: 20px;
     border-radius: 15px;
-    display: table;
+    display: inline-flex;
 }
 
 .home-ontology-list>div {
-    height: 100px;
+    /*! height: 100px; */
     background: white;
     border-radius: 15px;
     float: left;
@@ -141,38 +141,38 @@
     font-size: 10pt;
     width: 200px;
     box-shadow: 0 0 6px gainsboro;
+    padding: 10px 0;
 }
 
 .home-ontology-list>button {
     width: 200px;
     background: white;
-    height: 100px;
     border-radius: 15px;
     box-shadow: 0 0 6px gainsboro;
     display: block;
     font-size: 29pt;
     color: gainsboro;
+    float: left;
+    height: inherit;
 }
 
 .home-title {
     width: 1240px;
-    margin: 50px auto 0px auto;
+    margin: 20px auto 0px auto;
     font-size: 26pt;
     color: #444;
 }
 
 .home-ontology-list p {
-    margin: 20px;
+    margin: 10px 20px;
+    font-weight: bold;
+    color: #515151;
 }
 
-.home-ontology-list a {
-    height: inherit;
-    width: inherit;
-    display: inline-block;
-}
+
 
 .graph-filters {
-    position: fixed;
+    position: absolute;
     top: 55px;
     display: grid;
     justify-items: left;
@@ -191,7 +191,7 @@
 }
 
 .graph-filters-button {
-    position: fixed;
+    position: absolute;
     top: 55px;
     left: 20px;
     background: white;
@@ -223,4 +223,151 @@
 .graph-filters-button>i {
     height: 30px;
     line-height: 30px;
+}
+
+.graph-main-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.graph-main-container-linked {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 1;
+    width: 100%;
+}
+
+.graph-ontology-pattern-menu {
+    position: absolute;
+    top: 90px;
+    right: 223px;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 4px gainsboro;
+    z-index: 9;
+}
+
+.graph-ontology-pattern-menu>h1 {
+    height: 30px;
+    line-height: 30px;
+}
+
+.graph-ontology-pattern-menu-search {
+    position: relative;
+}
+
+.graph-ontology-pattern-menu-search>span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    color: #828282;
+    font-size: 9pt;
+}
+
+.graph-ontology-pattern-menu-search>input {
+    width: calc(100% - 30px);
+    padding: 0 0 0 30px;
+}
+
+.graph-ontology-pattern-menu-list {
+    width: 300px;
+    margin: 10px 0;
+    border: 1px solid gainsboro;
+    border-radius: 5px;
+    display: grid;
+}
+
+.graph-ontology-pattern-menu-list>div {
+    height: 30px;
+}
+
+.graph-ontology-pattern-menu-list p {
+    height: 30px;
+    float: left;
+    line-height: 30px;
+    font-size: 9pt;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+.graph-ontology-pattern-menu-list a {
+    float: right;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    font-size: 10pt;
+    color: #6c6c6c;
+    line-height: 30px;
+}
+
+.graph-ontology-pattern-menu-controls>button {
+    background: gainsboro;
+    height: 30px;
+    padding: 0 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    font-size: 9pt;
+}
+
+.graph-ontology-pattern-menu-list .selected {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.node-label {
+    position: relative;
+}
+
+.node-locked-marker {
+    position: absolute;
+    top: -15px;
+    left: -20px;
+    background: #ff4545;
+    height: 25px;
+    width: 25px;
+    border-radius: 25px;
+    color: white;
+    text-align: center;
+    line-height: 25px;
+    border: 3px solid white;
+    font-size: 7pt;
+}
+
+.home-ontology-list-open {
+    display: block;
+    margin: 10px 20px 5px 20px;
+    background: #5f9dff;
+    color: white;
+    height: 25px;
+    border-radius: 25px;
+    padding: 0 10px;
+    width: max-content;
+    line-height: 25px;
+    font-size: 8pt;
+}
+
+.home-ontology-list-expand {
+    display: block;
+    margin: 0px 20px 10px 20px;
+    background: #ff7171;
+    color: white;
+    height: 25px;
+    border-radius: 25px;
+    padding: 0 10px;
+    width: max-content;
+    line-height: 25px;
+    font-size: 8pt;
+}
+
+.home-container {
+    width: 1240px;
+    margin: 50px auto;
 }
